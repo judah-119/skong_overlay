@@ -30,7 +30,11 @@ root.overrideredirect(True)
 root.attributes('-topmost', True)
 root.attributes('-transparentcolor', 'pink')
 
+root.focus_force()       # Force the window to receive focus
+root.grab_set()
+
 root.bind("<Escape>", lambda e: root.destroy())
+
 
 screem_W = root.winfo_screenwidth()
 screem_H = root.winfo_screenheight()
