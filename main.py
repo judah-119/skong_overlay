@@ -73,6 +73,8 @@ idle_flip_ready = True
 
 char = canvas.create_image(x, y, anchor="nw", image=idle_frames[0])
 
+canvas.tag_bind(char, "<Button-1>", lambda e: root.destroy())
+
 # -------- State management --------
 
 
