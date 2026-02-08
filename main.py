@@ -112,8 +112,12 @@ def update():
 
     if state == 'walk':
         x += speed * direction
-        if x <= 0 or x >= screem_W - size:
-            direction *= -1
+
+        # wrap around screen instead of turning
+        if direction == 1 and x > screem_W:
+            x = -size
+        elif direction == -1 and x < -size:
+            x = screem_W
 
         if direction == 1:
             frame = next(walk_anim_flipped)
@@ -121,7 +125,7 @@ def update():
             frame = next(walk_anim)
 
     else:
-        if random.random() < 0.05:
+        if random.random() < 0.02:
             direction *= -1
 
         if direction == 1:
