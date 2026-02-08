@@ -2,6 +2,20 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import itertools
 import random
+import sys
+import os
+
+# -------- Helper to find files both in script and exe --------
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and PyInstaller """
+    if getattr(sys, 'frozen', False):  # PyInstaller bundles as exe
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 
 # --------------config-----------------
 size = 64
@@ -16,6 +30,8 @@ root.overrideredirect(True)
 root.attributes('-topmost', True)
 root.attributes('-transparentcolor', 'pink')
 
+root.bind("<Escape>", lambda e: root.destroy())
+
 screem_W = root.winfo_screenwidth()
 screem_H = root.winfo_screenheight()
 root.geometry(f"{screem_W}x{screem_H}+0+0")
@@ -23,13 +39,16 @@ root.geometry(f"{screem_W}x{screem_H}+0+0")
 canvas = tk.Canvas(root, bg='pink', highlightthickness=0)
 canvas.pack(fill=tk.BOTH, expand=True)
 
+# -------- Load frames safely --------
+
 
 def load_frames(prefix):
     frames = []
     flipped_frames = []
 
     for i in range(4):
-        img = Image.open(f"{prefix}_{i}.png")
+        img_path = resource_path(f"{prefix}_{i}.png")
+        img = Image.open(img_path)
         frames.append(ImageTk.PhotoImage(img))
         flipped_frames.append(
             ImageTk.PhotoImage(img.transpose(Image.FLIP_LEFT_RIGHT))
@@ -42,13 +61,9 @@ idle_frames, idle_frames_flipped = load_frames("idle")
 walk_frames, walk_frames_flipped = load_frames("walk")
 
 idle_anim = itertools.cycle(idle_frames)
-walk_anim = itertools.cycle(walk_frames)
-
-idle_anim = itertools.cycle(idle_frames)
 idle_anim_flipped = itertools.cycle(idle_frames_flipped)
 walk_anim = itertools.cycle(walk_frames)
 walk_anim_flipped = itertools.cycle(walk_frames_flipped)
-
 
 state = 'idle'
 direction = 1
@@ -57,6 +72,8 @@ y = screem_H - size - 5
 idle_flip_ready = True
 
 char = canvas.create_image(x, y, anchor="nw", image=idle_frames[0])
+
+# -------- State management --------
 
 
 def set_state(new_state):
@@ -80,6 +97,8 @@ def toggle_state():
         set_state("walk")
     else:
         set_state("idle")
+
+# -------- Update animation --------
 
 
 def update():
