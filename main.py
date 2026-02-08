@@ -97,7 +97,7 @@ def toggle_state():
     global direction, idle_flip_ready
     if state == "idle":
         # Flip once at the end of idle with a chance
-        if idle_flip_ready and random.random() < 0.05:
+        if idle_flip_ready and random.random() < 0.02:
             direction *= -1
             idle_flip_ready = False
         set_state("walk")
